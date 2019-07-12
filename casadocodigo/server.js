@@ -1,3 +1,6 @@
-const http = require('http');
+const app = require('./src/config/custom-express');
 
-const servidor = http.createServer();
+app.listen(3000, () => {
+
+    console.log(`Servidor rodando na porta 3000`);
+});
