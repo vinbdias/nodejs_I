@@ -29,4 +29,20 @@ module.exports = (app) => {
                 ))
                 .catch(error => console.log(error));
     });
+
+    app.get('/livros/form', (request, response) => {
+
+        response.marko(
+            require('../views/livros/form/form.marko')
+        );
+    });
+
+    app.post('/livros', (request, response) => {
+
+        const livroDao = new LivroDao(db);
+
+        livroDao.adiciona(request.body)
+            .then(response.redirect('/livros'))
+            .catch(error => console.log(error));        
+    });
 };
