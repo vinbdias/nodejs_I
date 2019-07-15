@@ -9,10 +9,11 @@ var marko_template = module.exports = require("marko/src/html").t(__filename),
     marko_helpers = require("marko/src/runtime/html/helpers"),
     marko_loadTag = marko_helpers.t,
     component_globals_tag = marko_loadTag(require("marko/src/components/taglib/component-globals-tag")),
-    init_components_tag = marko_loadTag(require("marko/src/components/taglib/init-components-tag")),
-    await_reorderer_tag = marko_loadTag(require("marko/src/taglibs/async/await-reorderer-tag")),
     marko_forEach = marko_helpers.f,
-    marko_escapeXml = marko_helpers.x;
+    marko_escapeXml = marko_helpers.x,
+    marko_escapeXmlAttr = marko_helpers.xa,
+    init_components_tag = marko_loadTag(require("marko/src/components/taglib/init-components-tag")),
+    await_reorderer_tag = marko_loadTag(require("marko/src/taglibs/async/await-reorderer-tag"));
 
 function render(input, out, __component, component, state) {
   var data = input;
@@ -21,27 +22,35 @@ function render(input, out, __component, component, state) {
 
   component_globals_tag({}, out);
 
-  out.w("<h1> Listagem de livros </h1>");
+  out.w("<h1> Listagem de livros </h1><table id=\"livros\"><tr><td>ID</td><td>Título</td><td>Preço</td><td>Editar</td><td>Remover</td></tr>");
 
-  init_components_tag({}, out);
-
-  await_reorderer_tag({}, out, __component, "5");
-
-  out.w("</body> <table><tr><td>ID</td><td>Título</td></tr>");
-
-  var for__10 = 0;
+  var for__12 = 0;
 
   marko_forEach(data.livros, function(livro) {
-    var keyscope__11 = "[" + ((for__10++) + "]");
+    var keyscope__13 = "[" + ((for__12++) + "]");
 
-    out.w("<tr> <td>" +
+    out.w("<tr id=\"livro_" +
+      marko_escapeXmlAttr(livro.id) +
+      "\"> <td>" +
       marko_escapeXml(livro.id) +
       "</td><td>" +
       marko_escapeXml(livro.titulo) +
-      "</td></tr>");
+      "</td><td>" +
+      marko_escapeXml(livro.preco) +
+      "</td><td><a href=\"/livros/form/" +
+      marko_escapeXmlAttr(livro.id) +
+      "\">Editar</a></td> <td><a href=\"#\" data-ref=\"" +
+      marko_escapeXmlAttr(livro.id) +
+      "\" data-type=\"remocao\">Remover</a></td> </tr>");
   });
 
-  out.w("</table> </html> ");
+  out.w("</table> <script src=\"/static/js/remove-livro.js\">\r\n        </script> ");
+
+  init_components_tag({}, out);
+
+  await_reorderer_tag({}, out, __component, "23");
+
+  out.w("</body> </html>");
 }
 
 marko_template._ = marko_renderer(render, {
